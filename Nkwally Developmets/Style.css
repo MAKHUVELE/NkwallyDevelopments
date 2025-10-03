@@ -20,18 +20,18 @@
 .vision-section img {
   border: none;                     /* Remove solid border */
   border-radius: 8px;               /* Rounded corners */
-  box-shadow: 0 0 15px #FF7F1A,    /* Outer glow */
-              0 0 30px #FF7F1A,    /* Stronger glow */
-              0 0 45px #FF7F1A;    /* Even more diffuse glow */
+  box-shadow: 0 0 5px #FF7F1A,    /* Outer glow */
+              0 0 10px #FF7F1A,    /* Stronger glow */
+              0 0 15px #FF7F1A;    /* Even more diffuse glow */
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .about-section img:hover,
 .vision-section img:hover {
   transform: scale(1.05);           /* Slight zoom on hover */
-  box-shadow: 0 0 20px #FF7F1A,
-              0 0 40px #FF7F1A,
-              0 0 60px #FF7F1A;
+  box-shadow: 0 0 5px #FF7F1A,
+              0 0 10px #FF7F1A,
+              0 0 15px #FF7F1A;
 }
 
 
@@ -100,6 +100,61 @@ body {
   100% { background-position: 0% 50%; }
 }
 
+/* Animated gradient border for hero image */
+.hero-image-box {
+  position: relative;
+  display: inline-block;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.hero-image-box img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: inherit;
+}
+
+/* Outer animated gradient */
+.hero-image-box::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    270deg,
+    #f86b00,
+    #090900,
+    #f8a412,
+    #ed9a14
+  );
+  background-size: 300% 300%;
+  animation: gradient 2.5s infinite linear;
+  z-index: -2;
+}
+
+/* Inner white layer to protect image content */
+.hero-image-box::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  border-radius: inherit;
+  background: #fbbd03;
+  z-index: -1;
+}
+
+/* Gradient animation keyframes (reuse from contact-box) */
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 
 a {
   text-decoration: none;
@@ -344,6 +399,12 @@ ul.bulleted li::before {
   width: 100%;
 }
 
+.nav-toggle {
+  position: relative;
+  z-index: 1001; /* makes sure it's always above other elements */
+}
+
+
 /* -----------------------
    Hero Section
 ----------------------- */
@@ -355,8 +416,10 @@ ul.bulleted li::before {
 }
 
 .hero-img-logo {
-  height: 170px;
   width: auto;
+  max-width: 100%;
+  height: auto;       /* Let height adjust naturally */
+  max-height: 190px;  /* Prevent it from being too tall */
   display: block;
 }
 
@@ -365,26 +428,30 @@ ul.bulleted li::before {
   min-height: 72vh;
   display: flex;
   align-items: center;
+  justify-content: center; /* Center content on smaller screens */
   overflow: hidden;
+  padding: 0 1rem;         /* Small horizontal padding for mobile */
 }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: 1fr 420px;
+  grid-template-columns: 1fr 1fr; /* Make it flexible */
   gap: 40px;
   align-items: center;
   width: 100%;
+  max-width: 1200px;          /* Limit overall width */
 }
 
 .hero-left {
-  padding: 40px;
+  padding: 20px;
 }
 
 .hero-title {
-  font-size: clamp(40px,10vw,96px);
+  font-size: clamp(36px, 8vw, 96px); /* Slightly smaller on small screens */
   font-weight: 800;
-  line-height: 0.95;
-  letter-spacing: -2px;
+  line-height: 1.05;
+  letter-spacing: -1px;
+  text-align: left;
 }
 
 .hero-sub {
@@ -394,12 +461,92 @@ ul.bulleted li::before {
   font-size: 14px;
 }
 
+.hero-right {
+  display: flex;
+  justify-content: center;  /* Keep image centered on mobile */
+  overflow: visible;
+}
+
 .hero-right img {
   width: 100%;
   height: auto;
+  max-width: 500px;       /* Prevent it from stretching too much */
   border-radius: 8px;
   object-fit: cover;
   display: block;
+}
+
+
+/* Preview Section Grid */
+.preview-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.preview-item {
+  position: relative; /* ensure pseudo-element has correct stacking context */
+}
+
+.preview-item p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* Stack on smaller screens */
+@media (max-width: 768px) {
+  .preview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Gradient line under heading - full width */
+.heading-gradient {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+  padding-bottom: 12px; /* space for the line */
+  text-align: center;
+  width: 100%;
+}
+
+.heading-gradient::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 80%;           /* almost full width */
+  max-width: 600px;     /* optional max width for large screens */
+  height: 3px;          /* slightly thicker line */
+  border-radius: 3px;
+  background: linear-gradient(270deg, #ffb700, #f8a412, #000000);
+  background-size: 300% 300%;
+  animation: gradientLine 2.5s infinite linear;
+}
+
+/* Gradient animation keyframes */
+@keyframes gradientLine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.preview-image {
+  flex: 1 1 50%;
+}
+
+.preview-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
 }
 
 /* Buttons */
@@ -460,66 +607,74 @@ button:hover, .btn:hover {
   box-shadow: 0 4px 16px rgba(255,127,26,0.4);
 }
 
-/* Lightbox */
+/* -----------------------
+   Lightbox Styles
+----------------------- */
 .lightbox {
   display: none;
   position: fixed;
-  z-index: 999;
+  z-index: 1500; /* on top of everything */
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
+  background: rgba(0,0,0,0.9);
   overflow: hidden;
-  background-color: rgba(0,0,0,0.9);
 }
 
+/* Image inside lightbox */
 .lightbox-content {
   display: block;
-  margin: 80px auto;
   max-width: 90%;
   max-height: 80vh;
+  margin: 80px auto 20px;
   border-radius: 10px;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.4s ease-in-out;
 }
 
 .lightbox-content.visible {
   opacity: 1;
 }
 
+/* Caption */
 .lightbox-caption {
   text-align: center;
   color: #f1f1f1;
-  margin-top: 15px;
+  margin-top: 12px;
   font-size: 1rem;
 }
 
+/* Close button */
 .close {
   position: absolute;
-  top: 30px;
-  right: 40px;
-  color: #fff;
-  font-size: 40px;
+  top: 20px;
+  right: 30px;
+  font-size: 45px;
   font-weight: bold;
+  color: #fff;
   cursor: pointer;
-  transition: 0.3s;
+  z-index: 2000; /* stay above image */
+  line-height: 1;
 }
 
 .close:hover {
   color: #ccc;
 }
 
+/* Navigation arrows */
 .prev, .next {
-  cursor: pointer;
   position: absolute;
   top: 50%;
-  padding: 16px;
-  margin-top: -30px;
-  color: #fff;
-  font-weight: bold;
+  transform: translateY(-50%);
   font-size: 40px;
+  font-weight: bold;
+  color: #fff;
+  padding: 16px;
+  cursor: pointer;
   user-select: none;
-  transition: 0.3s;
+  transition: color 0.3s ease;
+  z-index: 2000;
 }
 
 .prev { left: 20px; }
@@ -528,6 +683,7 @@ button:hover, .btn:hover {
 .prev:hover, .next:hover {
   color: #ccc;
 }
+
 
 /* -----------------------
    Sections
@@ -774,5 +930,189 @@ section p {
 
   .team-grid {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+/* -----------------------
+   Responsive Fixes for All Pages
+----------------------- */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  /* Hero section (Home) */
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+
+  .hero-left {
+    order: 1;
+  }
+  .hero-right {
+    order: 2;
+  }
+
+  .hero-img-logo {
+    max-width: 200px;
+    margin: 0 auto 1rem;
+    display: block;
+  }
+
+  /* About page split sections */
+  .about-grid,
+  .vision-section.split {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .about-image img,
+  .split-image img {
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+  }
+
+  /* Team grid (About) */
+  .team-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* additional hero code for nkwally text adjustment on smaller screens*/
+
+/* Hero section adjustments for smaller screens */
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr; /* stack left & right */
+    gap: 20px;
+    text-align: center;
+  }
+
+  .hero-left {
+    padding: 20px;             /* less padding */
+    display: flex;
+    flex-direction: column;
+    align-items: center;       /* center the logo and title */
+  }
+
+  .hero-logo {
+    align-items: center;       /* center the logo image above text */
+  }
+
+  .hero-title {
+    text-align: center;        /* ensure the title is centered */
+  }
+
+  .hero-right {
+    display: flex;
+    justify-content: center;   /* center the hero image */
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  /* Navigation */
+  .main-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .main-nav a {
+    font-size: 14px;
+    margin: 0 5px;
+  }
+
+  /* Hero */
+  .hero-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  /* About text */
+  .about-text {
+    padding: 0 1rem;
+  }
+
+  /* Team grid */
+  .team-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Gallery (Services page) */
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  /* Hero */
+  .hero-title {
+    font-size: 1.6rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  /* Team grid (About) */
+  .team-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Gallery */
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Text */
+  .about-text p,
+  .center-paragraph,
+  .preview-item p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+/* -----------------------
+   Mobile Navigation
+----------------------- */
+.nav-toggle {
+  display: none;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #000; /* adjust if your header has dark bg */
+}
+
+/* On mobile */
+@media (max-width: 768px) {
+  .main-nav {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .main-nav.active {
+    display: flex;
+  }
+
+  .nav-toggle {
+    display: block;
+  }
+
+  .header-inner {
+    justify-content: space-between;
+    align-items: center;
   }
 }
