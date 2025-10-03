@@ -9,84 +9,93 @@
 })();
 
 // -------------------------
-// Variables
+// Hamburger Button Toggle
 // -------------------------
-let currentIndex = 0;
-const images = document.querySelectorAll(".gallery-grid img");
-const lightbox = document.getElementById("lightbox");
-const lightboxImg = document.getElementById("lightbox-img");
-const lightboxCaption = document.getElementById("lightbox-caption");
+document.addEventListener("DOMContentLoaded", () => {
+  const navToggle = document.querySelector(".nav-toggle");
+  const mainNav = document.querySelector(".main-nav");
 
-// -------------------------
-// Open Lightbox
-// -------------------------
-function openLightbox(index) {
-  currentIndex = index;
-  lightbox.style.display = "block";
-  showSlide(currentIndex);
-}
-
-// -------------------------
-// Close Lightbox
-// -------------------------
-function closeLightbox() {
-  lightbox.style.display = "none";
-}
-
-// -------------------------
-// Change Slide
-// -------------------------
-function changeSlide(n) {
-  currentIndex += n;
-  if (currentIndex < 0) currentIndex = images.length - 1;
-  if (currentIndex >= images.length) currentIndex = 0;
-  showSlide(currentIndex);
-}
-
-// -------------------------
-// Show Slide with Fade
-// -------------------------
-function showSlide(index) {
-  const img = images[index];
-
-  // Reset opacity for fade effect
-  lightboxImg.classList.remove("visible");
-
-  setTimeout(() => {
-    lightboxImg.src = img.src;
-    lightboxCaption.innerHTML = img.alt;
-    lightboxImg.classList.add("visible");
-  }, 50);
-}
-
-// -------------------------
-// Keyboard Navigation
-// -------------------------
-document.addEventListener("keydown", function(event) {
-  if (lightbox.style.display === "block") {
-    if (event.key === "ArrowLeft") changeSlide(-1);
-    else if (event.key === "ArrowRight") changeSlide(1);
-    else if (event.key === "Escape") closeLightbox();
+  if (navToggle && mainNav) {
+    navToggle.addEventListener("click", () => {
+      mainNav.classList.toggle("active");
+    });
   }
 });
 
+
 // -------------------------
-// Swipe Support for Mobile
+// Lightbox (only if gallery exists)
 // -------------------------
-let touchStartX = 0;
-let touchEndX = 0;
+const images = document.querySelectorAll(".gallery-grid img");
+const lightbox = document.getElementById("lightbox");
 
-lightbox.addEventListener("touchstart", function(e) {
-  touchStartX = e.changedTouches[0].screenX;
-}, false);
+if (images.length && lightbox) {
+  let currentIndex = 0;
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxCaption = document.getElementById("lightbox-caption");
 
-lightbox.addEventListener("touchend", function(e) {
-  touchEndX = e.changedTouches[0].screenX;
-  handleGesture();
-}, false);
+  function openLightbox(index) {
+    currentIndex = index;
+    lightbox.style.display = "block";
+    showSlide(currentIndex);
+  }
 
-function handleGesture() {
-  const swipeThreshold = 50;
-  if (touchEndX < touchStartX - swipeThreshold) changeSlide(1);
-  else if (touchEndX > touchStartX + swipeThreshold) changeSlide(-1);
+  function closeLightbox() {
+    lightbox.style.display = "none";
+  }
+
+  function changeSlide(n) {
+    currentIndex += n;
+    if (currentIndex < 0) currentIndex = images.length - 1;
+    if (currentIndex >= images.length) currentIndex = 0;
+    showSlide(currentIndex);
+  }
+
+  function showSlide(index) {
+    const img = images[index];
+    lightboxImg.classList.remove("visible");
+    setTimeout(() => {
+      lightboxImg.src = img.src;
+      lightboxCaption.innerHTML = img.alt;
+      lightboxImg.classList.add("visible");
+    }, 50);
+  }
+
+    // Attach controls
+  document.querySelector(".close")?.addEventListener("click", closeLightbox);
+  document.querySelector(".prev")?.addEventListener("click", () => changeSlide(-1));
+  document.querySelector(".next")?.addEventListener("click", () => changeSlide(1));
+
+  
+
+  // Close & navigation
+  document.querySelector(".close")?.addEventListener("click", closeLightbox);
+  document.querySelector(".prev")?.addEventListener("click", () => changeSlide(-1));
+  document.querySelector(".next")?.addEventListener("click", () => changeSlide(1));
+
+  // Background click
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  // Keyboard
+  document.addEventListener("keydown", function(event) {
+    if (lightbox.style.display === "block") {
+      if (event.key === "ArrowLeft") changeSlide(-1);
+      else if (event.key === "ArrowRight") changeSlide(1);
+      else if (event.key === "Escape") closeLightbox();
+    }
+  });
+
+  // Swipe support
+  let touchStartX = 0;
+  let touchEndX = 0;
+  lightbox.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  lightbox.addEventListener("touchend", (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchEndX < touchStartX - 50) changeSlide(1);
+    else if (touchEndX > touchStartX + 50) changeSlide(-1);
+  });
 }
