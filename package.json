@@ -1,0 +1,17 @@
+{
+  "name": "nkwallydevelopments-master",
+  "version": "1.0.0",
+  "main": "Script.js",
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
